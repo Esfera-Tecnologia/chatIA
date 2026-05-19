@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat.IA - Cadastro de Perfil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* VARIÁVEIS PADRÃO (TEMA ESCURO) */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --sidebar-bg: rgba(15, 23, 42, 0.6);
+            --content-bg: transparent;
+            --split-list-bg: rgba(15, 23, 42, 0.2);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --table-hover: rgba(255, 255, 255, 0.03);
+            --btn-action-bg: #ffffff;
+            --btn-action-text: #0f172a;
+            --glow-opacity: 0.08;
+            --split-divider: rgba(255, 255, 255, 0.06);
+            --checkbox-card-bg: rgba(15, 23, 42, 0.4);
+        }
+
+        /* TEMA CLARO */
+        body.light-theme {
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --content-bg: #ffffff;
+            --split-list-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --input-border: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #0284c7;
+            --table-hover: #f8fafc;
+            --btn-action-bg: #0f172a;
+            --btn-action-text: #ffffff;
+            --glow-opacity: 0.03;
+            --split-divider: transparent;
+            --checkbox-card-bg: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--accent-color);
+            filter: blur(200px);
+            opacity: var(--glow-opacity);
+            top: -10%;
+            right: 10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+            color: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 8px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            padding-left: 8px;
+            margin-bottom: 12px;
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+        }
+
+        .menu-item.active {
+            border-left: 3px solid #38bdf8;
+            border-radius: 0 10px 10px 0;
+            padding-left: 9px;
+        }
+
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .user-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: #475569;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .theme-toggle {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* ESTRUTURA DO CONTEÚDO DIVIDIDO */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            background: var(--content-bg);
+            transition: background 0.3s ease;
+        }
+
+        /* LADO ESQUERDO: LISTA */
+        .split-list {
+            width: 50%;
+            background: var(--split-list-bg);
+            border-right: 1px solid var(--split-divider);
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+            overflow-y: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 24px;
+        }
+
+        /* Tabela */
+        .data-table-wrapper {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.15);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        body.light-theme .data-table th {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-main);
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: var(--table-hover);
+        }
+
+        /* Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+        body.light-theme .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        body.light-theme .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .pill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 220px;
+        }
+
+        .item-pill {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        body.light-theme .item-pill {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+
+        /* LADO DIREITO: FORMULÁRIO */
+        .split-form {
+            width: 50%;
+            padding: 32px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: rgba(15, 23, 42, 0.1);
+        }
+
+        body.light-theme .split-form {
+            background: transparent;
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea.input-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Grid de Seleção Múltipla Estilizada */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .checkbox-card {
+            background: var(--checkbox-card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .checkbox-card input[type="checkbox"] {
+            accent-color: var(--accent-color);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .checkbox-card span {
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        select.input-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        select.input-control option {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        body.light-theme select.input-control option {
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--input-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        body.light-theme .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-primary {
+            background: var(--btn-action-bg);
+            color: var(--btn-action-text);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-0.5px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div>
+                <div class="logo-area">
+                    <div class="logo-icon">⚡</div>
+                    <h1 class="logo-text">Chat.IA</h1>
+                </div>
+
+                <p class="menu-section-title">Menu</p>
+                <nav class="menu-nav">
+                    <a href="painel.html" class="menu-item">💬 Chat Principal</a>
+                    <a href="usuario.html" class="menu-item">👤 Cadastro de Usuário</a>
+                    <a href="perfil.html" class="menu-item active">🛡️ Cadastro de Perfil</a>
+                    <a href="assistente.html" class="menu-item">🤖 Cadastro de Assistentes</a>
+                </nav>
+            </div>
+
+            <div class="user-profile">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    🌓 Alternar Tema
+                </button>
+                
+                <div class="user-info-wrapper">
+                    <div class="avatar">UD</div>
+                    <div class="user-info">
+                        <h4>Dev User</h4>
+                        <p>admin@empresa.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <section class="split-list">
+                <div class="page-header">
+                    <h2>Perfis de Acesso</h2>
+                    <p>Defina as permissões de menus e assistentes permitidos por grupo.</p>
+                </div>
+
+                <input type="text" class="search-box" placeholder="Buscar perfil por título ou permissão...">
+
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Título / Descrição</th>
+                                <th>Acessos (Menus)</th>
+                                <th>Assistentes</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Administrador</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Acesso total irrestrito ao sistema.</div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Chat</span>
+                                        <span class="item-pill">Usuários</span>
+                                        <span class="item-pill">Perfil</span>
+                                        <span class="item-pill">Assistentes</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Todos</span>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge active">Ativo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Diretoria</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Visualização estratégica e chat.</div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Chat</span>
+                                        <span class="item-pill">Usuários</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Jurídico</span>
+                                        <span class="item-pill">Financeiro</span>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge active">Ativo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Operacional</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Acesso básico para uso dos assistentes cotidianos.</div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Chat</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="pill-list">
+                                        <span class="item-pill">Recursos Humanos</span>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge active">Ativo</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="split-form">
+                <div class="form-card">
+                    <h3>Novo Perfil</h3>
+                    
+                    <form onsubmit="alert('Perfil salvo com sucesso! (Simulação)'); return false;">
+                        
+                        <div class="form-group">
+                            <label for="titulo">Título do Perfil</label>
+                            <input type="text" id="titulo" class="input-control" placeholder="Ex: Auditoria Interna" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição</label>
+                            <textarea id="descricao" class="input-control" placeholder="Descreva brevemente as responsabilidades deste perfil..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Acessos Autorizados (Menus)</label>
+                            <div class="selection-grid">
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="menus[]" value="">
+                                    <span>Todos</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="menus[]" value="chat">
+                                    <span>💬 Chat Principal</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="menus[]" value="usuarios">
+                                    <span>👤 Cad. Usuários</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="menus[]" value="perfis">
+                                    <span>🛡️ Cad. Perfis</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="menus[]" value="assistentes">
+                                    <span>🤖 Cad. Assistentes</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Assistentes Vinculados</label>
+                            <div class="selection-grid">
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="assistantes[]" value="">
+                                    <span>Todos</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="assistantes[]" value="juridico">
+                                    <span>⚖️ Jurídico</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="assistantes[]" value="rh">
+                                    <span>🤝 Rec. Humanos</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="assistantes[]" value="financeiro">
+                                    <span>📊 Financeiro</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" class="input-control" required>
+                                <option value="active" selected>Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="document.querySelector('form').reset();">Limpar</button>
+                            <button type="submit" class="btn btn-primary">Salvar Perfil</button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+    </script>
+</body>
+</html>

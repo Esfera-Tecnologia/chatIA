@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat.IA - Painel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* VARIÁVEIS PADRÃO (TEMA ESCURO) */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --sidebar-bg: rgba(15, 23, 42, 0.6);
+            --content-bg: transparent;
+            --assistants-bg: rgba(15, 23, 42, 0.2);
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --input-bg: rgba(15, 23, 42, 0.5);
+            --input-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --message-user: rgba(56, 189, 248, 0.15);
+            --message-ai: rgba(255, 255, 255, 0.05);
+            --btn-send-bg: #ffffff;
+            --btn-send-text: #0f172a;
+            --glow-opacity: 0.08;
+        }
+
+        /* CONFIGURAÇÃO DO TEMA CLARO (Mantendo a Sidebar Escura) */
+        body.light-theme {
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --content-bg: #ffffff;
+            --assistants-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --input-bg: #f8fafc;
+            --input-border: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #0284c7; /* Azul levemente mais escuro para melhor contraste */
+            --message-user: rgba(2, 132, 199, 0.1);
+            --message-ai: #f1f5f9;
+            --btn-send-bg: #0f172a;
+            --btn-send-text: #ffffff;
+            --glow-opacity: 0.03;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Efeitos Glow de IA no fundo */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--accent-color);
+            filter: blur(200px);
+            opacity: var(--glow-opacity);
+            top: -10%;
+            right: 10%;
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+        }
+
+        /* COLUNA 1: Menu Lateral (Sempre Escura) */
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 23, 42, 0.95); /* Fixado escuro */
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+            color: #f8fafc; /* Força textos claros na sidebar */
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 8px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            padding-left: 8px;
+            margin-bottom: 12px;
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+        }
+
+        .menu-item.active {
+            border-left: 3px solid #38bdf8;
+            border-radius: 0 10px 10px 0;
+            padding-left: 9px;
+        }
+
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .user-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: #475569;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* Botão Alternador de Tema */
+        .theme-toggle {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        /* COLUNA 2: Lista de Assistentes (Muda com o tema) */
+        .assistants-sidebar {
+            width: 280px;
+            background: var(--assistants-bg);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        .assistants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .assistant-card {
+            padding: 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .assistant-card:hover, .assistant-card.active {
+            background: var(--card-bg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        body:not(.light-theme) .assistant-card:hover, 
+        body:not(.light-theme) .assistant-card.active {
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .assistant-card.active {
+            border-color: var(--accent-color);
+        }
+
+        .assistant-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .assistant-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+        }
+
+        body.light-theme .badge {
+            background: rgba(2, 132, 199, 0.1);
+        }
+
+        /* COLUNA 3: Chat Principal (Muda com o tema) */
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--content-bg);
+            transition: background 0.3s ease;
+        }
+
+        .chat-header {
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chat-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            max-width: 75%;
+        }
+
+        .message-row.user {
+            align-self: flex-end;
+        }
+
+        .message-row.ai {
+            align-self: flex-start;
+        }
+
+        .message-bubble {
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .user .message-bubble {
+            background: var(--message-user);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-bottom-right-radius: 4px;
+        }
+
+        body.light-theme .user .message-bubble {
+            border-color: rgba(2, 132, 199, 0.2);
+        }
+
+        .ai .message-bubble {
+            background: var(--message-ai);
+            border: 1px solid var(--card-border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            padding: 0 4px;
+        }
+
+        .user .message-meta {
+            text-align: right;
+        }
+
+        /* Área de Input do Chat */
+        .chat-input-area {
+            padding: 24px 32px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .input-wrapper {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 16px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            padding: 8px 0;
+            resize: none;
+        }
+
+        .btn-send {
+            background: var(--btn-send-bg);
+            color: var(--btn-send-text);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-send:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div>
+                <div class="logo-area">
+                    <div class="logo-icon">⚡</div>
+                    <h1 class="logo-text">Chat.IA</h1>
+                </div>
+
+                <p class="menu-section-title">Menu</p>
+                <nav class="menu-nav">
+                    <a href="#" class="menu-item active">💬 Chat Principal</a>
+                    <a href="usuario.html" class="menu-item">👤 Cadastro de Usuário</a>
+                    <a href="perfil.html" class="menu-item">🛡️ Cadastro de Perfil</a>
+                    <a href="assistente.html" class="menu-item">🤖 Cadastro de Assistentes</a>
+                </nav>
+            </div>
+
+            <div class="user-profile">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    🌓 Alternar Tema (Claro/Escuro)
+                </button>
+                
+                <div class="user-info-wrapper">
+                    <div class="avatar">UD</div>
+                    <div class="user-info">
+                        <h4>Dev User</h4>
+                        <p>admin@empresa.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <aside class="assistants-sidebar">
+            <input type="text" class="search-box" placeholder="Buscar assistente...">
+            
+            <div class="assistants-list">
+                <div class="assistant-card active">
+                    <h3>⚖️ Jurídico <span class="badge">Azure OpenAI</span></h3>
+                    <p>Análise de contratos corporativos e conformidade legal.</p>
+                </div>
+                <div class="assistant-card">
+                    <h3>🤝 Recursos Humanos</h3>
+                    <p>Suporte sobre políticas internas e onboarding de funcionários.</p>
+                </div>
+                <div class="assistant-card">
+                    <h3>📊 Financeiro</h3>
+                    <p>Auxílio em relatórios e consultas de faturamento.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="chat-title">
+                    <h2>Assistente Jurídico</h2>
+                    <p>Contexto focado em diretrizes legais e conformidade corporativa.</p>
+                </div>
+                <div>
+                    <span class="badge" style="padding: 6px 12px;">RAG Ativo: Manuais_2026.pdf</span>
+                </div>
+            </header>
+
+            <div class="chat-messages">
+                <div class="message-row user">
+                    <div class="message-bubble">
+                        Olá! Poderia resumir a cláusula de confidencialidade padrão do novo contrato de prestadores?
+                    </div>
+                    <div class="message-meta">Você • 10:35</div>
+                </div>
+
+                <div class="message-row ai">
+                    <div class="message-bubble">
+                        Com base nos documentos anexados, a cláusula de confidencialidade padrão estabelece que todas as informações comerciais, técnicas e operacionais trocadas devem ser mantidas em sigilo absoluto por até 5 (cinco) anos após o término do contrato, sob pena de multa rescisória automática.
+                    </div>
+                    <div class="message-meta">Jurídico • 10:36</div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" class="chat-input" placeholder="Pergunte algo para o assistente selecionado...">
+                    <button class="btn-send">Enviar</button>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+    </script>
+</body>
+</html>
